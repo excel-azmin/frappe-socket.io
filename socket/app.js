@@ -11,7 +11,7 @@ const { io } = require('socket.io-client');
 // Configuration
 const BASE_URL = process.env.SOCKET_URL || 'https://arcpos.aninda.me';
 const SITE_NAME = process.env.SITE_NAME || 'arcpos.aninda.me';
-const BEARER_TOKEN = process.env.BEARER_TOKEN || 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiYXptaW5AZXhjZWxiZC5jb20iLCJleHAiOjE3NzAwMzI2MjIsImlhdCI6MTc3MDAyOTAyMiwidHlwZSI6ImFjY2VzcyJ9.ddz0F1GV1o8Q62iApmTtfVfPMbpVcvlfzWz7HgLaZSk';
+const BEARER_TOKEN = process.env.BEARER_TOKEN || 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiYXptaW5AZXhjZWxiZC5jb20iLCJleHAiOjE3NzAxMjk4MDgsImlhdCI6MTc3MDEyNjIwOCwidHlwZSI6ImFjY2VzcyJ9.8lnvrW5aVLRACT0yo9VN-1jgQbrZABid-9UcEh9GpM8';
 const USER_EMAIL = process.env.USER_EMAIL || 'azmin@excelbd.com';
 
 const NAMESPACE = `/${SITE_NAME}`;

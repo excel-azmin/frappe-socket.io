@@ -2,11 +2,13 @@ import { useState, useEffect, useRef } from 'react'
 import { io } from 'socket.io-client'
 import './App.css'
 
-// Configuration - same as socket/app.js
-const TARGET_URL = 'https://arcpos.aninda.me' // Display only
+// Configuration
 const SITE_NAME = 'arcpos.aninda.me'
-const BEARER_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiYXptaW5AZXhjZWxiZC5jb20iLCJleHAiOjE3NzAwMzI2MjIsImlhdCI6MTc3MDAyOTAyMiwidHlwZSI6ImFjY2VzcyJ9.ddz0F1GV1o8Q62iApmTtfVfPMbpVcvlfzWz7HgLaZSk'
+const BEARER_TOKEN = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyIjoiYXptaW5AZXhjZWxiZC5jb20iLCJleHAiOjE3NzAxMzA3OTUsImlhdCI6MTc3MDEyNzE5NSwidHlwZSI6ImFjY2VzcyJ9.EiTqVfs14XYaLhGGBWEvuBJ9dp6OQZxUQXDURQ1X6nM'
 const USER_EMAIL = 'azmin@excelbd.com'
+
+// Socket URL: Use proxy in dev, direct URL in production
+const SOCKET_URL = import.meta.env.DEV ? '' : `https://${SITE_NAME}`
 const NAMESPACE = `/${SITE_NAME}`
 
 function App() {
@@ -30,19 +32,15 @@ function App() {
 
   useEffect(() => {
     // Create socket connection
-    // Connect via Vite proxy (relative URL)
-    const socket = io(NAMESPACE, {
+    // In dev: uses Vite proxy (empty URL). In prod: connects directly to server
+    const socket = io(`${SOCKET_URL}${NAMESPACE}`, {
       path: '/socket.io',
-      transports: ['websocket', 'polling'],
+      // Pass auth via handshake (works with browser WebSocket)
       auth: {
         token: BEARER_TOKEN,
-      },
-      query: {
         site: SITE_NAME,
       },
-      withCredentials: true,
-      reconnection: true,
-      timeout: 10000,
+      transports: ['websocket', 'polling'],
     })
 
     socketRef.current = socket
@@ -57,7 +55,7 @@ function App() {
       socket.emit('room:join', userRoom)
 
       // Join doctype rooms
-      const doctypesToWatch = ['Sales Invoice', 'POS Invoice', 'ToDo']
+      const doctypesToWatch = ['Sales Invoice', 'POS Invoice', 'ToDo', 'Notification Log']
       for (const doctype of doctypesToWatch) {
         const doctypeRoom = `${SITE_NAME}:doctype:${doctype}`
         socket.emit('room:join', doctypeRoom)
@@ -153,7 +151,7 @@ function App() {
       <div className="config-panel">
         <div className="config-item">
           <span className="config-label">URL:</span>
-          <span className="config-value">{TARGET_URL}</span>
+          <span className="config-value">{SOCKET_URL || '(dev proxy)'}{NAMESPACE}</span>
         </div>
         <div className="config-item">
           <span className="config-label">Namespace:</span>
